@@ -1,0 +1,23 @@
+<VirtualHost *:80>
+  DocumentRoot /var/www
+  ServerName localhost
+
+  <Directory />
+   Options Indexes FollowSymLinks MultiViews
+   AllowOverride None
+   Order allow,deny
+   allow from all
+  </Directory>
+
+  ProxyRequests Off
+  ProxyPreserveHost Off
+
+  ProxyPass /videopodcast/ !
+  ProxyPass / http://rss.cnn.com/
+  ProxyPassReverse / http://rss.cnn.com/
+
+ <Location />
+    Order allow,deny
+    Allow from all
+ </Location>
+</VirtualHost>
