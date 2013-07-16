@@ -32,7 +32,7 @@ video {
 	height: 450px;
 }                    
 #episode-list{
-	margin:0;
+	margin-top:5px;
 
 }
 .item-list {
