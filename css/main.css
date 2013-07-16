@@ -13,6 +13,12 @@ body {
 video {
 	height:329px; 
 }
+
+li {
+	border: 2px solid white;
+	margin:2px;
+	-webkit-border-radius:5px;
+}
 /* Anadir caja con esquinas redondeadas*/
 .title {
 
@@ -32,12 +38,12 @@ video {
 	height: 450px;
 }                    
 #episode-list{
-	margin-top:5px;
+	margin-top:6px;
 
 }
 .item-list {
 	margin: 2px 0px;
-	padding: 6px 10px 10px 10px;
+	padding: 6px 0px 4px 10px;
 }
 
 .focused{	
@@ -47,6 +53,12 @@ video {
 	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(238,238,238,1)), color-stop(100%,rgba(204,204,204,1))); /* Chrome,Safari4+ */
 	background: -webkit-radial-gradient(center, ellipse cover, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%); /* Chrome10+,Safari5.1+ */
 
+	-webkit-border-radius:5px;
+}
+
+.selected{
+	border: 2px solid lightblue;
+	
 	-webkit-border-radius:5px;
 }
 .separator{

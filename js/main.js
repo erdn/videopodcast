@@ -4,6 +4,7 @@
 $(document).ready(function() {
 	var pos = 0,
 		item = 0,
+		itemSelected =0,
 		items = 13;
 
 	var container = $("#ul-container"),
@@ -19,9 +20,8 @@ $(document).ready(function() {
 			// dpad up
 			if(0===pos && 0 < item){
 				toggleFocus(item);
-				item--;
-				pos--;
-				scroll(item-3);
+				item--;				
+				scroll(item);
 				toggleFocus(item);
 			}else if(0!==pos){
 				toggleFocus(item);
@@ -33,12 +33,12 @@ $(document).ready(function() {
 			break;
 			case 40:
 			// dpad down
-			if(3===pos && item < items){
+			if(3===pos && item < items -1 ){
 				toggleFocus(item);
 				item++;				
 				scroll(item-3);
 				toggleFocus(item);
-			}else if(3!==pos){
+			}else if(3!==pos && item < items -1 ){
 				toggleFocus(item);
 				item++;
 				pos++;
@@ -47,6 +47,9 @@ $(document).ready(function() {
 			break;
 			case 13:
 			// enter
+			toggleSelect(itemSelected);
+			itemSelected=item;
+			toggleSelect(itemSelected);
 			//TODO con el item en el que estamos
 			// extraemos los datos del objeto js y pintamos
 			// donde corresponde
@@ -74,6 +77,16 @@ $(document).ready(function() {
 	*/
 	function toggleFocus(pos){
 		lista.children().eq(pos).toggleClass("focused");		
+	}
+
+	/**
+	* Funcion que pone y quita borde seleccion
+	*
+	* @pos Integer Elemento sobre el que queremos modificar
+	* el foco
+	*/
+	function toggleSelect(pos){
+		lista.children().eq(pos).toggleClass("selected");		
 	}
 });
 /**
