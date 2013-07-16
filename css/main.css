@@ -27,13 +27,17 @@ video {
    float: none !important;
 }
                     
+#ul-container{
+	overflow: hidden;
+	height: 450px;
+}                    
 #episode-list{
 	margin:0;
 
 }
 .item-list {
 	margin: 2px 0px;
-	padding: 10px 10px;
+	padding: 6px 10px 10px 10px;
 }
 
 .focused{	
