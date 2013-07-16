@@ -3,7 +3,9 @@
  */
 $(document).ready(function() {
     /* variables  */
-    var videoPodcast = 'http://localhost/services/podcasting/ac360/rss.xml',
+    
+    //var videoPodcast = 'http://rss.cnn.com/services/podcasting/ac360/rss.xml',
+    var videoPodcast = 'http://rss.cnn.com/services/podcasting/cnnnewsroom/rss.xml',
         container = $('#ul-container'),
         lista = $('#episode-list'),
         listaSocial = $('#social'),
@@ -23,8 +25,8 @@ $(document).ready(function() {
     //Asigno listener evento de teclas
     $(document).keydown(keyDownListener);
 
-    //recupero el rss
-    fetchRSS(videoPodcast);
+    //recupero el rss, transformando la url en local para proxy
+    fetchRSS(videoPodcast.replace('http://rss.cnn.com/','http://localhost/'));
 
 
     /* funciones privadas */
