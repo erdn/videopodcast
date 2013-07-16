@@ -3,11 +3,11 @@
  */
 $(document).ready(function() {
     /* variables  */
-    var videoPodcast = 'http://127.0.0.1/services/podcasting/ac360/rss.xml',
+    var videoPodcast = 'http://localhost/services/podcasting/ac360/rss.xml',
     	pos = 0,
-        item = 0,
-        itemSelected = 0,
-        items = 13,
+        itemPos = 0,
+        itemSel = 0,
+        itemNum = 0,
      	container = $('#ul-container'),
         lista = $('#episode-list'),
         description = $('#video-description')
@@ -54,16 +54,16 @@ $(document).ready(function() {
     * Pulsada tecla dpad up
     */
     function dpadUp() {
-        if (0 === pos && item > 0) {
-            toggleFocus(item);
-            item--;
-            scroll(item);
-            toggleFocus(item);
+        if (0 === pos && itemPos > 0) {
+            toggleFocus(itemPos);
+            itemPos--;
+            scroll(itemPos);
+            toggleFocus(itemPos);
         } else if (0 !== pos) {
-            toggleFocus(item);
-            item--;
+            toggleFocus(itemPos);
+            itemPos--;
             pos--;
-            toggleFocus(item);
+            toggleFocus(itemPos);
         }
     }
 
@@ -72,16 +72,16 @@ $(document).ready(function() {
     */
 
     function dpadDown() {
-        if (3 === pos && item < items - 1) {
-            toggleFocus(item);
-            item++;
-            scroll(item - 3);
-            toggleFocus(item);
-        } else if (3 !== pos && item < items - 1) {
-            toggleFocus(item);
-            item++;
+        if (3 === pos && itemPos < itemNum - 1) {
+            toggleFocus(itemPos);
+            itemPos++;
+            scroll(itemPos - 3);
+            toggleFocus(itemPos);
+        } else if (3 !== pos && itemPos < itemNum - 1) {
+            toggleFocus(itemPos);
+            itemPos++;
             pos++;
-            toggleFocus(item);
+            toggleFocus(itemPos);
         }
     }
 
@@ -89,13 +89,13 @@ $(document).ready(function() {
      * Pulsada tecla dpad enter
      */
     function dpadEnter() {
-        toggleSelect(itemSelected);
-        itemSelected = item;
-        toggleSelect(itemSelected);
+        toggleSelect(itemSel);
+        itemSel = itemPos;
+        toggleSelect(itemSel);
 
         //pongo descriptcion y video
-        description.html(podcast.items[item].description);
-        setVideo(podcast.items[item].media);        
+        description.html(podcast.items[itemPos].description);
+        setVideo(podcast.items[itemPos].media);        
     }
 
     /**
@@ -151,8 +151,18 @@ $(document).ready(function() {
                 podcast.items.push(item);
             }
 
-            //TODO inicializamos valores, renderizamos la vista, ponemos foco donde 
-            //corresponde, no reproducimos video
+            // numero maximo de episodios
+            itemNum = podcast.items.length;
+
+            // datos de video podcast
+            $('#podcast-title').html(podcast.title);
+            $('#podcast-description').html(podcast.description);
+
+            // lista de videos, descripcion selecion y foco al primer elemento            
+            $("#episode-list").html(Handlebars.templates.item(podcast));
+            description.html(podcast.items[itemPos].description);                       
+            toggleFocus(itemPos);
+            toggleSelect(itemSel);
         }
     }
 
