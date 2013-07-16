@@ -45,7 +45,7 @@ li {
 #social li {
     display: inline;
     list-style-type: none;
-	float: right;	
+	float: left;	
     height:13px;
     padding: 2px;
     margin: 0px;
