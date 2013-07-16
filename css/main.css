@@ -18,10 +18,7 @@ li {
 	border: 2px solid white;
 	margin:2px;
 	-webkit-border-radius:5px;
-}
-/* Anadir caja con esquinas redondeadas*/
-.title {
-
+	border-radius:5px;
 }
 
 .full-width{

@@ -4,14 +4,16 @@
 $(document).ready(function() {
     /* variables  */
     var videoPodcast = 'http://localhost/services/podcasting/ac360/rss.xml',
-    	pos = 0,
+        pos = 0,
         itemPos = 0,
         itemSel = 0,
         itemNum = 0,
-     	container = $('#ul-container'),
+        container = $('#ul-container'),
         lista = $('#episode-list'),
-        description = $('#video-description')
-        podcast = {};
+        description = $('#video-description'),
+        podcast = {},
+        xhr = new XMLHttpRequest(),
+        namespaces = {};
         
 
     /* llamadas inicializacion */
@@ -29,10 +31,10 @@ $(document).ready(function() {
     * Listener pulsaciones teclado
     */
     function keyDownListener(event){
+        var keyCode = (event.keyCode ? event.keyCode : event.which);
+        console.log(keyCode);
 
-        console.log(event.keyCode);
-
-        switch (event.keyCode) {
+        switch (keyCode) {
             case 38:
                 // dpad up
                 dpadUp();
@@ -103,10 +105,7 @@ $(document).ready(function() {
     * con el mismo
     */
     function fetchRSS(url){
-        var xhr = new XMLHttpRequest(),
-            namespaces = {};
-
-        
+               
         //ponemos ruta y enviamos peticon
         xhr.open('GET', url);
         xhr.onreadystatechange = stateChange;
