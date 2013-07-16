@@ -4,13 +4,17 @@
 $(document).ready(function() {
     /* variables  */
     var videoPodcast = 'http://localhost/services/podcasting/ac360/rss.xml',
+        container = $('#ul-container'),
+        lista = $('#episode-list'),
+        listaSocial = $('#social'),
+        description = $('#video-description'),
         pos = 0,
         itemPos = 0,
         itemSel = 0,
         itemNum = 0,
-        container = $('#ul-container'),
-        lista = $('#episode-list'),
-        description = $('#video-description'),
+        social = false,
+        socialPos = 0,
+        socialNum = listaSocial.children().length,
         podcast = {};     
 
 
@@ -32,16 +36,27 @@ $(document).ready(function() {
     function keyDownListener(event) {
         //compatibilidad entre browsers
         var keyCode = (event.keyCode ? event.keyCode : event.which);     
+        console.log(keyCode);
 
         switch (keyCode) {
             case 38:
-                // dpad up
+                // dpad up                
                 dpadUp();
                 break;
 
             case 40:
                 // dpad down
                 dpadDown();
+                break;
+
+            case 39:
+                // dpad right
+                dpadRight();
+                break;
+
+            case 37:
+                // dpad left
+                dpadLeft();
                 break;
 
             case 13:
@@ -57,16 +72,18 @@ $(document).ready(function() {
      */
 
     function dpadUp() {
-        if (0 === pos && itemPos > 0) {
-            toggleFocus(itemPos);
-            itemPos--;
-            scroll(itemPos);
-            toggleFocus(itemPos);
-        } else if (0 !== pos) {
-            toggleFocus(itemPos);
-            itemPos--;
-            pos--;
-            toggleFocus(itemPos);
+        if(!social){
+            if (0 === pos && itemPos > 0) {
+                toggleFocus(itemPos);
+                itemPos--;
+                scroll(itemPos);
+                toggleFocus(itemPos);
+            } else if (0 !== pos) {
+                toggleFocus(itemPos);
+                itemPos--;
+                pos--;
+                toggleFocus(itemPos);
+            }            
         }
     }
 
@@ -76,16 +93,54 @@ $(document).ready(function() {
      */
 
     function dpadDown() {
-        if (3 === pos && itemPos < itemNum - 1) {
+        if(!social){
+            if (3 === pos && itemPos < itemNum - 1) {
+                toggleFocus(itemPos);
+                itemPos++;
+                scroll(itemPos - 3);
+                toggleFocus(itemPos);
+            } else if (3 !== pos && itemPos < itemNum - 1) {
+                toggleFocus(itemPos);
+                itemPos++;
+                pos++;
+                toggleFocus(itemPos);
+            }            
+        }
+    }
+
+    /**
+     * Pulsada tecla dpad up
+     */
+
+    function dpadRight() {
+        //si social y no nos pasamos del maximo
+        if(social && socialPos < socialNum -1){
+            //avanzamos a la derecha
+            toggleSocialFocus(socialPos);
+            socialPos++;
+            toggleSocialFocus(socialPos);
+        }else if(!social){
+            //nos metemos en social
+            social = !social;
             toggleFocus(itemPos);
-            itemPos++;
-            scroll(itemPos - 3);
+            toggleSocialFocus(socialPos);
+        }        
+    }
+
+    /**
+     * Pulsada tecla dpad up
+     */
+
+    function dpadLeft() {
+        if(social && 0 ===socialPos ){
+            //volvemos a lista
+            social = !social;
             toggleFocus(itemPos);
-        } else if (3 !== pos && itemPos < itemNum - 1) {
-            toggleFocus(itemPos);
-            itemPos++;
-            pos++;
-            toggleFocus(itemPos);
+            toggleSocialFocus(socialPos);
+        }else if(social){
+            toggleSocialFocus(socialPos);
+            socialPos--;
+            toggleSocialFocus(socialPos);
         }
     }
 
@@ -95,13 +150,17 @@ $(document).ready(function() {
      */
 
     function dpadEnter() {
-        toggleSelect(itemSel);
-        itemSel = itemPos;
-        toggleSelect(itemSel);
+        if(social){
 
-        //pongo descriptcion y video
-        description.html(podcast.items[itemPos].description);
-        setVideo(podcast.items[itemPos].media);
+        }else{
+            toggleSelect(itemSel);
+            itemSel = itemPos;
+            toggleSelect(itemSel);
+
+            //pongo descriptcion y video
+            description.html(podcast.items[itemPos].description);
+            setVideo(podcast.items[itemPos].media);            
+        }
     }
 
 
@@ -282,6 +341,17 @@ $(document).ready(function() {
 
     function toggleFocus(pos) {
         lista.children().eq(pos).toggleClass("focused");
+    }
+
+    /**
+     * Funcion que pone y quita foco a iconos sociales
+     *
+     * @pos Integer Elemento sobre el que queremos modificar
+     * el foco
+     */
+
+    function toggleSocialFocus(pos) {
+        listaSocial.children().eq(pos).toggleClass("focused");
     }
 
 
