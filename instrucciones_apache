@@ -1,0 +1,24 @@
+Instrucciones 
+
+Configurar apache proxy evitar cross domain
+a2enmod proxy proxy_http
+
+<VirtualHost *:80>
+ ProxyRequests Off
+ ProxyPreserveHost Off
+
+ <Proxy *>
+    Order deny,allow
+    Allow from all
+ </Proxy>
+
+ ProxyPass / http://rss.cnn.com/
+ ProxyPassReverse / http://rss.cnn.com/
+
+ <Location />
+    Order allow,deny
+    Allow from all
+ </Location>
+
+
+</VirtualHost>
