@@ -11,9 +11,7 @@ $(document).ready(function() {
         container = $('#ul-container'),
         lista = $('#episode-list'),
         description = $('#video-description'),
-        podcast = {},
-        xhr = new XMLHttpRequest(),
-        namespaces = {};
+        podcast = {};     
 
 
     /* llamadas inicializacion */
@@ -113,7 +111,8 @@ $(document).ready(function() {
      */
 
     function fetchRSS(url) {
-
+        var xhr = new XMLHttpRequest(),
+            namespaces = {};
         //ponemos ruta y enviamos peticon
         xhr.open('GET', url);
         xhr.onreadystatechange = stateChange;
