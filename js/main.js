@@ -151,7 +151,7 @@ $(document).ready(function() {
 
     function dpadEnter() {
         if(social){
-
+            window.location.href=listaSocial.children().eq(socialPos).find('a').attr('href');
         }else{
             toggleSelect(itemSel);
             itemSel = itemPos;
@@ -351,7 +351,7 @@ $(document).ready(function() {
      */
 
     function toggleSocialFocus(pos) {
-        listaSocial.children().eq(pos).toggleClass("focused");
+        listaSocial.children().eq(pos).toggleClass("focused-social");
     }
 
 

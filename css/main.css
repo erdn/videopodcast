@@ -8,49 +8,41 @@
     height:705px;
     overflow: hidden;
 }
+
 video {
     height:329px;
 }
+
 li {
     border: 2px solid white;
     margin:2px;
     -webkit-border-radius:5px;
     border-radius:5px;
 }
+
 .full-width {
     width:100%;
 }
+
 .center {
     margin: 0 auto !important;
     float: none !important;
 }
+
 #ul-container {
     overflow: hidden;
     height: 450px;
 }
+
 #episode-list {
     margin-top:6px;
 }
+
 .item-list {
     margin: 2px 0px;
     padding: 6px 0px 4px 10px;
 }
 
-#social{
-	height: 25px;
-	margin:5px 0 5px 0;
-	overflow: hidden;
-}
-
-#social li {
-    display: inline;
-    list-style-type: none;
-	float: left;	
-    height:13px;
-    padding: 2px;
-    margin: 0px;
-	vertical-align:middle;
-}
 .focused {
     background-position: center center;
     background: -moz-radial-gradient(center, ellipse cover, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%);
@@ -79,4 +71,46 @@ li {
 .item-title {
     height: 40px;
     overflow: hidden;
+}
+
+
+#social{
+	height: 25px;
+	margin:5px 0 5px 0;
+	overflow: hidden;
+}
+
+.social{
+    display: inline;
+    list-style-type: none;
+	float: left;	
+    height:22px;
+    padding: 2px;
+    margin: 0px;
+	vertical-align:middle;
+
+    -webkit-border-radius:5px;
+    border-radius: 5px;
+    
+    border:1px solid white;
+}
+
+.focused-social {
+    background-position: center center;
+    background: -moz-radial-gradient(center, ellipse cover, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%);
+    /* FF3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, rgba(238, 238, 238, 1)), color-stop(100%, rgba(204, 204, 204, 1)));
+    /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(238, 238, 238, 1) 0%, rgba(204, 204, 204, 1) 100%);
+    /* Chrome10+,Safari5.1+ */
+    -webkit-border-radius:5px;
+    border-radius: 5px;
+
+    border:1px solid black;
+}
+
+#custom-tweet-button{
+    display: block;
+    padding: 2px 5px 2px 20px;
+    background: url('https://twitter.com/favicons/favicon.ico') 1px center no-repeat;
 }
