@@ -1,22 +1,59 @@
-
-
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
+body {
+	padding-top: 15px;
+	padding-bottom: -15px;
+	width: 1280px;
+	height:705px;
+	overflow: hidden;
 
+}
 
+video {
+	height:329px; 
+}
+/* Anadir caja con esquinas redondeadas*/
+.title {
 
+}
 
+.full-width{
+	width:100%;
+}
 
+.center {
+   margin: 0 auto !important;
+   float: none !important;
+}
+                    
+#episode-list{
+	margin:0;
 
+}
+.item-list {
+	margin: 2px 0px;
+	padding: 10px 10px;
+}
 
+.focused{	
+	background-position: center center;
+       
+	background: -moz-radial-gradient(center, ellipse cover, rgba(238,238,238,1) 0%, rgba(204,204,204,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(238,238,238,1)), color-stop(100%,rgba(204,204,204,1))); /* Chrome,Safari4+ */
+	background: -webkit-radial-gradient(center, ellipse cover, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%); /* Chrome10+,Safari5.1+ */
 
+	-webkit-border-radius:5px;
+}
+.separator{
+	border-bottom: 1px solid black;
+	margin:0 25px;
+}
 
-
-
-
-
-
-
-
-
+.my-hero{
+	max-height: 170px;
+	overflow: hidden;
+	max-width: 530px;
+	margin-top: 5px;
+	padding: 25px;
+}
