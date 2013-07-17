@@ -62,7 +62,8 @@ li {
     margin:0 25px;
 }
 .my-hero {
-    max-height: 170px;
+    /*max-height: 120px;*/
+    height: 120px;
     overflow: hidden;
     max-width: 530px;
     margin-top: 5px;

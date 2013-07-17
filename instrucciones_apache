@@ -1,24 +1,31 @@
-Instrucciones 
+==== Instrucciones apache proxy ====
 
-Configurar apache proxy evitar cross domain
+Habilitar los siguies modulos
+
 a2enmod proxy proxy_http
 
-<VirtualHost *:80>
- ProxyRequests Off
- ProxyPreserveHost Off
+Copiar en el directorio de sites-avaliable de apache en nuestro servidor el fichero videopodcast 
+que se encuentra en el directorio sites-available de este proyecto.
 
- <Proxy *>
-    Order deny,allow
-    Allow from all
- </Proxy>
+Añadir en nuestro fichero /etc/hosts (o equivalente) las siguientes entradas
+127.0.0.1       videopodcast
+127.0.0.1       rss.videopodcast
 
- ProxyPass / http://rss.cnn.com/
- ProxyPassReverse / http://rss.cnn.com/
+Activar virtualhost 
+a2ensite videopodcast
 
- <Location />
-    Order allow,deny
-    Allow from all
- </Location>
+Recargar configuracion de apache(ejemplo debian)
+service apache2 reload
+
+Por defecto este virtual host responde al subdominio videopodcast y apunta a la siguiente ruta
+/var/www/videopodcast
+
+La forma de acceder al mismo desde un navegador se realizara desde la siguiente url
+http://videopodcast/index.html
+
+El proxy tratara las peticiones al subdominio rss.videpodcast, comprobandolo desde la siguiente url
+http://rss.videopodcast/services/podcasting/cnnnewsroom/rss.xml
 
 
-</VirtualHost>
+En caso de existir problemas con la carga de ficheros comprobar que los permisos del proyecto 
+permiten a apache la carga de los mismos.

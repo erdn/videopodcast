@@ -3,30 +3,40 @@
  */
 $(document).ready(function() {
     /* variables  */
-    
+
     //var videoPodcast = 'http://rss.cnn.com/services/podcasting/ac360/rss.xml',
     var videoPodcast = 'http://rss.cnn.com/services/podcasting/cnnnewsroom/rss.xml',
+        originalDomain = 'http://rss.cnn.com/',
+        localDomain = 'http://rss.videopodcast/',
         container = $('#ul-container'),
-        lista = $('#episode-list'),
-        listaSocial = $('#social'),
         description = $('#video-description'),
-        pos = 0,
+        listPos = 0,
+        itemList = $('#episode-list'),
         itemPos = 0,
         itemSel = 0,
         itemNum = 0,
+        socialList = $('#social'),
         social = false,
         socialPos = 0,
-        socialNum = listaSocial.children().length,
-        podcast = {};     
+        socialNum = socialList.children().length,
+        podcast = {},
+        itemHeight = 0,        
+        scrollStep = 0;
 
 
     /* llamadas inicializacion */
 
-    //Asigno listener evento de teclas
+    // listener evento de teclas, boton up + boton down, enter lista
     $(document).keydown(keyDownListener);
 
-    //recupero el rss, transformando la url en local para proxy
-    fetchRSS(videoPodcast.replace('http://rss.cnn.com/','http://localhost/'));
+    $('#up-arrow').click(dpadUp);
+    $('#down-arrow').click(dpadDown);
+    itemList.click(itemClick);
+
+    //recupero el rss, transformando la url en local para proxy    
+    $.get(videoPodcast.replace(originalDomain, localDomain))
+        .done(rssFetch)
+        .fail(function(e) {console.log("error obteniendo rss "+e);});
 
 
     /* funciones privadas */
@@ -37,7 +47,7 @@ $(document).ready(function() {
 
     function keyDownListener(event) {
         //compatibilidad entre browsers
-        var keyCode = (event.keyCode ? event.keyCode : event.which);     
+        var keyCode = (event.keyCode ? event.keyCode : event.which);
         console.log(keyCode);
 
         switch (keyCode) {
@@ -74,18 +84,19 @@ $(document).ready(function() {
      */
 
     function dpadUp() {
-        if(!social){
-            if (0 === pos && itemPos > 0) {
+        if (!social) {
+            if (0 === listPos && itemPos > 0) {
                 toggleFocus(itemPos);
                 itemPos--;
-                scroll(itemPos);
+                scrollToPosition(itemPos);
                 toggleFocus(itemPos);
-            } else if (0 !== pos) {
+                scrollStep--;
+            } else if (0 !== listPos) {
                 toggleFocus(itemPos);
                 itemPos--;
-                pos--;
+                listPos--;
                 toggleFocus(itemPos);
-            }            
+            }
         }
     }
 
@@ -95,18 +106,19 @@ $(document).ready(function() {
      */
 
     function dpadDown() {
-        if(!social){
-            if (3 === pos && itemPos < itemNum - 1) {
+        if (!social) {
+            if (3 === listPos && itemPos < itemNum - 1) {
                 toggleFocus(itemPos);
                 itemPos++;
-                scroll(itemPos - 3);
+                scrollToPosition(itemPos - 3);
                 toggleFocus(itemPos);
-            } else if (3 !== pos && itemPos < itemNum - 1) {
+                scrollStep++;
+            } else if (3 !== listPos && itemPos < itemNum - 1) {
                 toggleFocus(itemPos);
                 itemPos++;
-                pos++;
+                listPos++;
                 toggleFocus(itemPos);
-            }            
+            }
         }
     }
 
@@ -116,17 +128,17 @@ $(document).ready(function() {
 
     function dpadRight() {
         //si social y no nos pasamos del maximo
-        if(social && socialPos < socialNum -1){
+        if (social && socialPos < socialNum - 1) {
             //avanzamos a la derecha
             toggleSocialFocus(socialPos);
             socialPos++;
             toggleSocialFocus(socialPos);
-        }else if(!social){
+        } else if (!social) {
             //nos metemos en social
             social = !social;
             toggleFocus(itemPos);
             toggleSocialFocus(socialPos);
-        }        
+        }
     }
 
     /**
@@ -134,12 +146,12 @@ $(document).ready(function() {
      */
 
     function dpadLeft() {
-        if(social && 0 ===socialPos ){
+        if (social && 0 === socialPos) {
             //volvemos a lista
             social = !social;
             toggleFocus(itemPos);
             toggleSocialFocus(socialPos);
-        }else if(social){
+        } else if (social) {
             toggleSocialFocus(socialPos);
             socialPos--;
             toggleSocialFocus(socialPos);
@@ -152,87 +164,101 @@ $(document).ready(function() {
      */
 
     function dpadEnter() {
-        if(social){
-            window.location.href=listaSocial.children().eq(socialPos).find('a').attr('href');
-        }else{
+        if (social) {
+            window.location.href = socialList.children().eq(socialPos).find('a').attr('href');
+        } else {
             toggleSelect(itemSel);
             itemSel = itemPos;
             toggleSelect(itemSel);
 
             //pongo descriptcion y video
             description.html(podcast.items[itemPos].description);
-            setVideo(podcast.items[itemPos].media);            
+            setVideo(podcast.items[itemPos].media);
         }
     }
 
-
     /**
-     * Metodo que obtiene el rss y genera un objeto JS
-     * con el mismo
-     */
+    * Llamada cuando evento sobre item lista episodios
+    */
+    function itemClick(event){        
+        //extraigo la posicion de la lista del elemento clickeado
+        var auxPos = $(event.target).closest("li").index();
 
-    function fetchRSS(url) {
-        var xhr = new XMLHttpRequest(),
-            namespaces = {};
-        //ponemos ruta y enviamos peticon
-        xhr.open('GET', url);
-        xhr.onreadystatechange = stateChange;
-        xhr.send();
-    }
-
-
-    /**
-     * Funcion llamada cuando cambia el estado de la conexion
-     * async
-     */
-
-    function stateChange() {
-        if (4 === this.readyState && 200 === this.status) {
-            var item = {},
-                xml = this.responseXML,
-                attr,
-                xmlItems,
-                i;
-
-            //extraemos los posibles ns
-            namespaces = getNameSpaces(xml);
-
-            //extramos los valores del videopodcast
-            podcast.title = getTagNameValue("title", xml);
-            podcast.description = getTagNameValue("description", xml);
-
-            //creamos array para los objetos de item
-            podcast.items = [];
-
-            xmlItems = xml.getElementsByTagName("item");
-
-            for (i = 0; i < xmlItems.length; i++) {
-                //inicializamos objeto item
-                item = {}
-
-                //extraemos los valores y atributos de tags
-                item.title = getTagNameValue("title", xmlItems[i]);
-                item.pubDate = getTagNameValue("pubDate", xmlItems[i]);
-                item.description = getTagNameValue("description", xmlItems[i]);
-                item.media = getTagNameAttribute("media:content", "url", xmlItems[i]);
-
-                //encolamos en array
-                podcast.items.push(item);
-            }
-
-            // numero maximo de episodios
-            itemNum = podcast.items.length;
-
-            // datos de video podcast
-            $('#podcast-title').html(podcast.title);
-            $('#podcast-description').html(podcast.description);
-
-            // lista de videos, descripcion selecion y foco al primer elemento            
-            $("#episode-list").html(Handlebars.templates.item(podcast));
-            description.html(podcast.items[itemPos].description);
-            toggleFocus(itemPos);
+        if (social){
+            toggleSocialFocus(socialPos);
+            socialPos=0;
+            toggleSelect(itemSel);
+            social = !social;
+        }else{            
+            toggleFocus(itemPos);            
             toggleSelect(itemSel);
         }
+        //Solucion para que funcione tal cual esta
+        itemPos = auxPos;
+        itemSel = auxPos;
+        toggleFocus(itemPos);            
+        toggleSelect(itemSel);
+
+        //pongo la posicion sobre la lista visible, para
+        //poder recuperar navegacion con teclado
+        listPos = auxPos - scrollStep;
+
+        dpadEnter();        
+    }
+
+
+    /**
+     * Funcion asincrona llamada cuando $.get(url) ha terminado
+     */
+
+    function rssFetch(xml) {
+        var item = {},
+            attr,
+            xmlItems,
+            i;
+
+        //extraemos los posibles ns
+        namespaces = getNameSpaces(xml);
+
+        //extramos los valores del videopodcast
+        podcast.title = getTagNameValue("title", xml);
+        podcast.description = getTagNameValue("description", xml);
+
+        //creamos array para los objetos de item
+        podcast.items = [];
+
+        xmlItems = xml.getElementsByTagName("item");
+
+        for (i = 0; i < xmlItems.length; i++) {
+            //inicializamos objeto item
+            item = {}
+
+            //extraemos los valores y atributos de tags
+            item.title = getTagNameValue("title", xmlItems[i]);
+            item.pubDate = getTagNameValue("pubDate", xmlItems[i]);
+            item.description = getTagNameValue("description", xmlItems[i]);
+            item.media = getTagNameAttribute("media:content", "url", xmlItems[i]);
+
+            //encolamos en array
+            podcast.items.push(item);
+        }
+
+        // numero maximo de episodios
+        itemNum = podcast.items.length;
+
+        // datos de video podcast
+        $('#podcast-title').html(podcast.title);
+        $('#podcast-description').html(podcast.description);
+
+        // renderizo template, inserto, foco + select a #0 + inserto selecion
+        itemList.html(Handlebars.templates.item(podcast));
+        description.html(podcast.items[itemPos].description);
+        toggleFocus(itemPos);
+        toggleSelect(itemSel);
+
+        // extraigo valor de elemento en lista
+        itemHeight=itemList.children().eq(0).outerHeight()
+
     }
 
 
@@ -328,9 +354,9 @@ $(document).ready(function() {
      * se desplace
      */
 
-    function scroll(pos) {
-        //magicnumber height + 2 px de bordes
-        container.scrollTop(111 * pos);
+    function scrollToPosition(pos) {
+        // +2px para que la lista no se desplace
+        container.scrollTop((itemHeight +2 ) * pos);
     }
 
 
@@ -342,7 +368,7 @@ $(document).ready(function() {
      */
 
     function toggleFocus(pos) {
-        lista.children().eq(pos).toggleClass("focused");
+        itemList.children().eq(pos).toggleClass("focused");
     }
 
     /**
@@ -353,7 +379,7 @@ $(document).ready(function() {
      */
 
     function toggleSocialFocus(pos) {
-        listaSocial.children().eq(pos).toggleClass("focused-social");
+        socialList.children().eq(pos).toggleClass("focused-social");
     }
 
 
@@ -365,7 +391,7 @@ $(document).ready(function() {
      */
 
     function toggleSelect(pos) {
-        lista.children().eq(pos).toggleClass("selected");
+        itemList.children().eq(pos).toggleClass("selected");
     }
 
 
@@ -378,9 +404,8 @@ $(document).ready(function() {
 
     function setVideo(url) {
         video.src = url;
-        video.load();
-        video.onload = function() {            
-            video.play();
-        }();
+        video.play();
+        //fix para video
+        //setTimeout(function(){$("#fix").toggle();},2000);
     }
 });
