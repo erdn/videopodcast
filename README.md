@@ -3,7 +3,7 @@ videopodcast
 
 Ejemplo de videopodcast
 
-Extructura
+Estructura
 
 /videopodcast/			ficheros html, readme...
 			 /js 		ficheros javascript
