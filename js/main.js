@@ -406,6 +406,6 @@ $(document).ready(function() {
         video.src = url;
         video.play();
         //fix para video
-        //setTimeout(function(){$("#fix").toggle();},2000);
+        setTimeout(function(){$("#fix").toggle();},2000);
     }
 });
